@@ -7,7 +7,7 @@
 
 ## Ссылки на проект
 
-IP 158.160.1.163
+IP 130.193.54.102
 
 Backend https://api.moviesnata.nomoredomains.rocks
 
