@@ -8,32 +8,18 @@ const { LINK_PATTERN } = require('../utils/constants');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    default: 'Жак-Ив Кусто',
     minlength: 2,
     maxlength: 30,
-  },
-  about: {
-    type: String,
-    default: 'Исследователь',
-    minlength: 2,
-    maxlength: 30,
-  },
-  avatar: {
-    type: String,
-    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
-    validate: {
-      validator: (value) => LINK_PATTERN.test(value),
-      message: 'Неправильный формат ссылки',
-    },
+    required: true,
   },
   email: {
     type: String,
-    required: true,
     unique: true,
     validate: {
       validator: (email) => validator.isEmail(email),
       message: 'Неправильный формат электронной почты',
     },
+    required: true,
   },
   password: {
     type: String,
@@ -42,7 +28,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.statics.findUserByCredentials = function findUser(email, password) {
+userSchema.statics.findUserByCredentials = function findUser (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {

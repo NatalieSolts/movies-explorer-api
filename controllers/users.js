@@ -24,6 +24,7 @@ module.exports.getAllUsers = (req, res, next) => {
     .catch(next);
 };
 
+// возвращает пользователя по id
 const getUserById = (req, res, id, next) => {
   User.findById(id)
     .orFail()
@@ -45,20 +46,14 @@ module.exports.getMe = (req, res, next) => {
   getUserById(req, res, id, next);
 };
 
-// GET /users/:userId - возвращает пользователя по _id
-module.exports.getUser = (req, res, next) => {
-  const id = req.params.userId;
-  getUserById(req, res, id, next);
-};
-
 // POST /users — создаёт пользователя
 module.exports.createUser = (req, res, next) => {
   const {
-    name, about, avatar, email, password,
+    name, email, password,
   } = req.body;
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
-      name, about, avatar, email, password: hash,
+      name, email, password: hash,
     }))
     .then((user) => {
       const userData = user.toObject();
@@ -100,12 +95,6 @@ const updateInfo = (req, res, dataToUpdate, next) => {
 module.exports.updateUserInfo = (req, res, next) => {
   const userData = req.body;
   updateInfo(req, res, userData, next);
-};
-
-// PATCH /users/me/avatar — обновляет аватар
-module.exports.updateUserAvatar = (req, res, next) => {
-  const newAvatarLink = req.body;
-  updateInfo(req, res, newAvatarLink, next);
 };
 
 module.exports.login = (req, res, next) => {
