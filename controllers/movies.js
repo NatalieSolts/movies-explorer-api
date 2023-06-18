@@ -67,7 +67,7 @@ module.exports.deleteMovie = (req, res, next) => {
     .populate([{ path: 'owner', model: 'user' }])
     .orFail()
     .then((movie) => {
-      const owner = movie.owner.toString();
+      const owner = movie.owner._id.toString();
       if (req.user._id === owner) {
         movie.deleteOne()
           .then(() => res.send({ message: 'Карточка успешно удалена.' }))
@@ -80,9 +80,9 @@ module.exports.deleteMovie = (req, res, next) => {
     // })
     .catch((err) => {
       if (err instanceof DocumentNotFoundError) {
-        next(new NotFoundError(`В базе данных не найдена карточка с ID: ${req.params.cardId}.`));
+        next(new NotFoundError(`В базе данных не найдена карточка с ID: ${req.params.movieId}.`));
       } else if (err instanceof CastError) {
-        next(new IncorrectDataError(`Передан некорректный ID карточки: ${req.params.cardId}.`));
+        next(new IncorrectDataError(`Передан некорректный ID карточки: ${req.params.movieId}.`));
       } else {
         next(err);
       }
