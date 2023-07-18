@@ -56,9 +56,19 @@ module.exports.createUser = (req, res, next) => {
       name, email, password: hash,
     }))
     .then((user) => {
-      const userData = user.toObject();
-      delete userData.password;
-      res.status(CREATED_CODE).send(userData);
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === 'production' ? SECRET_KEY : 'secret-key',
+        { expiresIn: '7d' },
+      );
+      const resp = {
+        token,
+        name: user.name,
+        email: user.email,
+        _id: user._id,
+      };
+
+      res.status(CREATED_CODE).send(resp);
     })
     .catch((err) => {
       if (err instanceof ValidationError) {
@@ -106,11 +116,17 @@ module.exports.login = (req, res, next) => {
         NODE_ENV === 'production' ? SECRET_KEY : 'secret-key',
         { expiresIn: '7d' },
       );
+      const resp = {
+        token,
+        name: user.name,
+        email: user.email,
+        _id: user._id,
+      };
       res.cookie('jwt', token, {
         httpOnly: true,
         maxAge: 3600000 * 24 * 7,
       });
-      res.send({ token });
+      res.send(resp);
     })
     .catch((err) => {
       if (err instanceof ValidationError) {

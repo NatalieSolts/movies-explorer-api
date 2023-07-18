@@ -70,7 +70,7 @@ module.exports.deleteMovie = (req, res, next) => {
       const owner = movie.owner._id.toString();
       if (req.user._id === owner) {
         movie.deleteOne()
-          .then(() => res.send({ message: 'Карточка успешно удалена.' }))
+          .then((deletedCard) => res.send(deletedCard))
           .catch(next);
       } else {
         next(new ForbiddenError('Нельзя удалять чужие карточки.'));
